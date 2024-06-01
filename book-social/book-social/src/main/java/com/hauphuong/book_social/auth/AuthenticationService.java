@@ -1,11 +1,15 @@
 package com.hauphuong.book_social.auth;
 
+import com.hauphuong.book_social.email.EmailService;
+import com.hauphuong.book_social.email.EmailTemplateName;
 import com.hauphuong.book_social.role.RoleRepository;
 import com.hauphuong.book_social.user.Token;
 import com.hauphuong.book_social.user.TokenRepository;
 import com.hauphuong.book_social.user.User;
 import com.hauphuong.book_social.user.UserRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +25,12 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final EmailService emailService;
 
-    public void register(ResgistrationRequest request){
+    @Value("${application.mailing.frontend.activation-url}")
+    private String activationUrl;
+
+    public void register(ResgistrationRequest request) throws MessagingException {
         var userRole = roleRepository.findByName("USER")
                 .orElseThrow(()-> new IllegalArgumentException("ROLE USER was not initialized"));
         var user = User.builder()
@@ -38,12 +46,17 @@ public class AuthenticationService {
         sendValidationEmail(user);
     }
 
-    private void sendValidationEmail(User user) {
+    private void sendValidationEmail(User user) throws MessagingException {
         var newToken = generateAndSaveActivationToken(user);
-
+        emailService.sendEmail(user.getEmail(),
+                user.fullName(),
+                EmailTemplateName.ACTIVATE_ACCOUNT,
+                activationUrl,
+                newToken,
+                "Account Activation");
     }
 
-    private Object generateAndSaveActivationToken(User user) {
+    private String generateAndSaveActivationToken(User user) {
         String generateToken = generateActivationCode(6);
         var token = Token.builder()
                 .token(generateToken)
