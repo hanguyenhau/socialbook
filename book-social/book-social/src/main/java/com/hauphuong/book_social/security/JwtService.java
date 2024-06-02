@@ -46,7 +46,7 @@ public class JwtService {
                 .getBody();
     }
 
-    private String generateToken(HashMap<String,Object> claims, UserDetails userDetails) {
+    public String generateToken(HashMap<String, Object> claims, UserDetails userDetails) {
 
         return buildToken(claims, userDetails, jwtExpiration);
     }
