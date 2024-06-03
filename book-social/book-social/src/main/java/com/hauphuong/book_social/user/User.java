@@ -1,5 +1,7 @@
 package com.hauphuong.book_social.user;
 
+import com.hauphuong.book_social.book.Book;
+import com.hauphuong.book_social.history.BookTransactionHistory;
 import com.hauphuong.book_social.role.Role;
 import jakarta.persistence.*;
 import jdk.jfr.Enabled;
@@ -43,6 +45,12 @@ public class User implements UserDetails, Principal {
     //private List<Role> roles
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookTransactionHistory> histories;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
