@@ -1,5 +1,6 @@
 package com.hauphuong.book_social.handle;
 
+import com.hauphuong.book_social.exception.OperationNotPermittedException;
 import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +92,17 @@ public class GlobalExceptionHandle {
                 .body(
                         ExceptionResponse.builder()
                                 .businessErrorDescription("Internal error, contact the admin")
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(OperationNotPermittedException.class)
+    public ResponseEntity<ExceptionResponse> handleException(OperationNotPermittedException exp){
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ExceptionResponse.builder()
                                 .error(exp.getMessage())
                                 .build()
                 );

@@ -1,5 +1,6 @@
 package com.hauphuong.book_social.book;
 
+import com.hauphuong.book_social.history.BookTransactionHistory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +27,19 @@ public class BookMapper {
                 .archived(book.isArchived())
                 .sharable(book.isShareable())
                 .owner(book.getOwner().fullName())
+                //.cover()
+                .build();
+    }
+
+    public BorrowedBookResponse toBorrowsBookResponse(BookTransactionHistory history) {
+        return BorrowedBookResponse.builder()
+                .id(history.getBook().getId())
+                .title(history.getBook().getTitle())
+                .authorName(history.getBook().getAuthorName())
+                .isbn(history.getBook().getIsbn())
+                .rate(history.getBook().getRate())
+                .returned(history.isReturned())
+                .returnApproved(history.isReturnApproved())
                 //.cover()
                 .build();
     }
