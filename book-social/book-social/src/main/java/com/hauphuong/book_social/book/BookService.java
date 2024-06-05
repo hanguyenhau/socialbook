@@ -2,6 +2,7 @@ package com.hauphuong.book_social.book;
 
 import com.hauphuong.book_social.common.PageResponse;
 import com.hauphuong.book_social.exception.OperationNotPermittedException;
+import com.hauphuong.book_social.file.FileStoreService;
 import com.hauphuong.book_social.history.BookTransactionHistory;
 import com.hauphuong.book_social.history.BookTransactionHistoryRepository;
 import com.hauphuong.book_social.user.User;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +27,8 @@ public class BookService {
     private final BookRepository bookRepository;
     private final BookTransactionHistoryRepository bookTransactionHistoryRepository;
     private final BookMapper bookmapper;
+    private final FileStoreService fileStoreService;
+
     public Integer save(BookRequest request, Authentication connectedUser){
         User user = ((User) connectedUser.getPrincipal());
         Book book = bookmapper.toBook(request);
@@ -191,5 +195,14 @@ public class BookService {
                 .orElseThrow(()-> new OperationNotPermittedException("The book is not returned yet. You cannot approve this"));
         bookTransactionHistory.setReturnApproved(true);
         return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
+    }
+
+    public void uploadBookCoverPicture(MultipartFile file, Authentication connectedUser, Integer bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(()-> new EntityNotFoundException("No book found with the ID: " + bookId));
+        User user = (User) connectedUser.getPrincipal();
+        var bookCover = fileStoreService.saveFile(file, user.getId());
+        book.setBookCover(bookCover);
+        bookRepository.save(book);
     }
 }
