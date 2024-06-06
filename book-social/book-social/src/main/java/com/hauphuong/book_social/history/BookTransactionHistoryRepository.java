@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -43,22 +44,22 @@ AND bookTransactionHistory.returnApproved = false
 SELECT transaction
 FROM BookTransactionHistory transaction
 WHERE transaction.user.id = :userId
-AND transaction.book.id =: bookId
+AND transaction.book.id = :bookId
 AND transaction.returned = false
 AND transaction.returnApproved = false
 """
     )
-    Optional<BookTransactionHistory> findByBookIdAndUserId(Integer bookId, Integer userId);
+    Optional<BookTransactionHistory> findByBookIdAndUserId(@Param("bookId")Integer bookId, @Param("userId") Integer userId);
 
     @Query(
             """
 SELECT transaction
 FROM BookTransactionHistory transaction
 WHERE transaction.book.owner.id = :userId
-AND transaction.book.id =: bookId
+AND transaction.book.id = :bookId
 AND transaction.returned = true
 AND transaction.returnApproved = false
 """
     )
-    Optional<BookTransactionHistory> findByBookIdAndOwnerId(Integer bookId, Integer id);
+    Optional<BookTransactionHistory> findByBookIdAndOwnerId(@Param("bookId") Integer bookId, @Param("userId")Integer id);
 }
