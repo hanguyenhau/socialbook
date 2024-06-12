@@ -25,6 +25,7 @@ public class ResgistrationRequest {
     @Email(message = "Email is not formatted")
     @NotEmpty(message = "Email is mandatory")
     @NotBlank(message = "Email is mandatory")
+
     private String email;
     @Size(min = 4, message = "Password should be 4 characters long minimum")
     @NotEmpty(message = "Password is mandatory")

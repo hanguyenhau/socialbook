@@ -44,6 +44,9 @@ public class AuthenticationService {
     public void register(ResgistrationRequest request) throws MessagingException {
         var userRole = roleRepository.findByName("USER")
                 .orElseThrow(()-> new IllegalArgumentException("ROLE USER was not initialized"));
+        if(userRepository.existsByEmail(request.getEmail())){
+            throw new MessagingException("Email is already registered.");
+        }
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
