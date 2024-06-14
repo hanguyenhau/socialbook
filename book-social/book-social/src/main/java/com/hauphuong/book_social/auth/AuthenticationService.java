@@ -11,6 +11,8 @@ import com.hauphuong.book_social.user.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,12 +43,14 @@ public class AuthenticationService {
     @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+
     public void register(ResgistrationRequest request) throws MessagingException {
         var userRole = roleRepository.findByName("USER")
                 .orElseThrow(()-> new IllegalArgumentException("ROLE USER was not initialized"));
-        if(userRepository.existsByEmail(request.getEmail())){
-            throw new MessagingException("Email is already registered.");
-        }
+//        if(userRepository.existsByEmail(request.getEmail())){
+//            throw new MessagingException("Email is already registered.");
+//        }
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -104,6 +108,7 @@ public class AuthenticationService {
         var claims = new HashMap<String, Object>();
         var user = ((User)auth.getPrincipal());
         claims.put("fullname", user.fullName());
+        logger.info("Principal email: {}", user.getUsername());
         var jwtToken = jwtService.generateToken(claims, user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
