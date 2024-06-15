@@ -5,9 +5,12 @@ import com.hauphuong.book_social.exception.OperationNotPermittedException;
 import com.hauphuong.book_social.file.FileStoreService;
 import com.hauphuong.book_social.history.BookTransactionHistory;
 import com.hauphuong.book_social.history.BookTransactionHistoryRepository;
+import com.hauphuong.book_social.security.UserDetailsServiceImpl;
 import com.hauphuong.book_social.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +32,8 @@ public class BookService {
     private final BookMapper bookmapper;
     private final FileStoreService fileStoreService;
 
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
+
     public Integer save(BookRequest request, Authentication connectedUser){
         User user = ((User) connectedUser.getPrincipal());
         Book book = bookmapper.toBook(request);
@@ -45,11 +50,13 @@ public class BookService {
 
     public PageResponse<BookResponse> findAllBook(int page, int size, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate").descending());
         Page<Book> books = bookRepository.findAllDisplayableBooks(pageable, user.getId());
         List<BookResponse> bookResponse = books.stream()
                 .map(bookmapper::toBookResponse)
                 .toList();
+        logger.info("Book pageable: " + pageable);
+        logger.info("books: " + books.getTotalPages());
         return new PageResponse<>(
                 bookResponse,
                 books.getNumber(),
