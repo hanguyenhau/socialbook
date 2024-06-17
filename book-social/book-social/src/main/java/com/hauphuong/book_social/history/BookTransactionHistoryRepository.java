@@ -32,8 +32,8 @@ WHERE history.book.owner.id = :userId
             """
 SELECT (COUNT(*)>0) AS isBorrowed
 FROM BookTransactionHistory bookTransactionHistory
-WHERE bookTransactionHistory.user.id =: userId
-AND bookTransactionHistory.book.id =: bookId
+WHERE bookTransactionHistory.user.id = :userId
+AND bookTransactionHistory.book.id = :bookId
 AND bookTransactionHistory.returnApproved = false
 """
     )
@@ -49,7 +49,7 @@ AND transaction.returned = false
 AND transaction.returnApproved = false
 """
     )
-    Optional<BookTransactionHistory> findByBookIdAndUserId(@Param("bookId")Integer bookId, @Param("userId") Integer userId);
+    Optional<BookTransactionHistory> findByBookIdAndUserId(Integer bookId, Integer userId);
 
     @Query(
             """
@@ -61,5 +61,5 @@ AND transaction.returned = true
 AND transaction.returnApproved = false
 """
     )
-    Optional<BookTransactionHistory> findByBookIdAndOwnerId(@Param("bookId") Integer bookId, @Param("userId")Integer id);
+    Optional<BookTransactionHistory> findByBookIdAndOwnerId( Integer bookId, Integer userId);
 }

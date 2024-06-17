@@ -70,7 +70,7 @@ public class BookService {
 
     public PageResponse<BookResponse> findAllBooksByOwner(int page, int size, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate"));
         Page<Book> books = bookRepository.findAll(BookSpecification.withOwnerId(user.getId()), pageable);
         List<BookResponse> bookResponse = books.stream()
                 .map(bookmapper::toBookResponse)
@@ -88,7 +88,7 @@ public class BookService {
 
     public PageResponse<BorrowedBookResponse> findAllBorrowedBooks(int page, int size, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate").descending());
         Page<BookTransactionHistory> allBorrowedBooks = bookTransactionHistoryRepository.findAllBorrowedBooks(pageable, user.getId());
         List<BorrowedBookResponse> bookResponse = allBorrowedBooks.stream()
                 .map(bookmapper::toBorrowsBookResponse)
@@ -106,7 +106,7 @@ public class BookService {
 
     public PageResponse<BorrowedBookResponse> findAllReturnedBooks(int page, int size, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate").descending());
         Page<BookTransactionHistory> allBorrowedBooks = bookTransactionHistoryRepository.findAllReturnedBooks(pageable, user.getId());
         List<BorrowedBookResponse> bookResponse = allBorrowedBooks.stream()
                 .map(bookmapper::toBorrowsBookResponse)
