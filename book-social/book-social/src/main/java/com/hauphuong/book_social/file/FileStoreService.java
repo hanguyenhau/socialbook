@@ -2,6 +2,7 @@ package com.hauphuong.book_social.file;
 
 import com.hauphuong.book_social.book.Book;
 import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static java.io.File.separator;
+import static java.lang.System.currentTimeMillis;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -23,29 +27,29 @@ public class FileStoreService {
     private String fileUploadPath;
 
     public String saveFile(
-            @NotNull MultipartFile sourceFile,
-            @NotNull Integer userId) {
-        final String fileUploadSubPath = "users" + File.separator + userId;
+            @NonNull MultipartFile sourceFile,
+            @NonNull Integer userId) {
+        final String fileUploadSubPath = "users" + separator + userId;
 
         return uploadFile(sourceFile, fileUploadSubPath);
     }
 
     private String uploadFile(
-            @NotNull MultipartFile sourceFile,
-            @NotNull String fileUploadSubPath
+            @NonNull MultipartFile sourceFile,
+            @NonNull String fileUploadSubPath
     ){
-        final String finalUploadPath = fileUploadPath + File.separator + fileUploadSubPath;
+        final String finalUploadPath = fileUploadPath + separator + fileUploadSubPath;
         File targetFolder = new File(finalUploadPath);
         if(!targetFolder.exists()){
             boolean folderCreated = targetFolder.mkdirs();
             if(!folderCreated){
-                log.warn("Failed to create the target folder");
+                log.warn("Failed to create the target folder" + targetFolder);
                 return null;
             }
         }
         final String fileExtension = getFileExtension(sourceFile.getOriginalFilename());
         //./upload/users/1/12152.jpg
-        String targetFilePath = finalUploadPath + File.separator + System.currentTimeMillis() + "." + fileExtension;
+        String targetFilePath = finalUploadPath + separator + currentTimeMillis() + "." + fileExtension;
         Path targetPath = Paths.get(targetFilePath);
         try{
             Files.write(targetPath, sourceFile.getBytes());

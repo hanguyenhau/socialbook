@@ -21,9 +21,9 @@ export class BookCardComponent {
   }
   get bookCover(): string | undefined {
     if(this._book.cover){
-      return 'data:image/jpg;base64, '+this._bookCover;
+      return 'data:image/jpg;base64,./uploads/users/3/1718644613972.jpg';
     }
-    return 'https://source.unsplash.com/user/c_v_r/1900x800';
+    return 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.istockphoto.com%2Fphotos%2Fdefault-image&psig=AOvVaw14QwSDL4XyjrbtjANRgq3C&ust=1718726695022000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCIiOjYKC44YDFQAAAAAdAAAAABAE';
   }
   get book(): BookResponse {
     return this._book;
@@ -40,7 +40,6 @@ export class BookCardComponent {
   @Output() private borrow: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
   @Output() private edit: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
   @Output() private details: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
-
 
 
   onShowDetails() {
