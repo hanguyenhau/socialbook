@@ -8,7 +8,6 @@ import {BookResponse} from "../../../../services/models/book-response";
 })
 export class BookCardComponent {
   private _book: BookResponse = {};
-  private _bookCover: string | undefined;
   private _manage: boolean = false;
 
   get manage(): boolean {
@@ -19,11 +18,13 @@ export class BookCardComponent {
   set manage(value: boolean) {
     this._manage = value;
   }
+
   get bookCover(): string | undefined {
     if(this._book.cover){
-      return 'data:image/jpg;base64,./uploads/users/3/1718644613972.jpg';
+      return 'data:image/jpg;base64,' + this._book.cover;
+    }else{
+      return 'https://st.depositphotos.com/2934765/53192/v/450/depositphotos_531920820-stock-illustration-photo-available-vector-icon-default.jpg'
     }
-    return 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.istockphoto.com%2Fphotos%2Fdefault-image&psig=AOvVaw14QwSDL4XyjrbtjANRgq3C&ust=1718726695022000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCIiOjYKC44YDFQAAAAAdAAAAABAE';
   }
   get book(): BookResponse {
     return this._book;

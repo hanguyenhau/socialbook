@@ -4,17 +4,17 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record BookRequest (Integer id,
-                           @NotNull(message = "100")
-                           @NotEmpty(message = "100")
+                           @NotNull(message = "Title is required")
+                           @NotEmpty(message = "Title is required")
                            String title,
-                           @NotNull(message = "101")
-                           @NotEmpty(message = "101")
+                           @NotNull(message = "Author Name is required")
+                           @NotEmpty(message = "Author Name is required")
                            String authorName,
-                           @NotNull(message = "102")
-                           @NotEmpty(message = "102")
+                           @NotNull(message = "International Standard Book Number is required")
+                           @NotEmpty(message = "International Standard Book Number is required")
                            String isbn,
-                           @NotNull(message = "103")
-                           @NotEmpty(message = "103")
+                           @NotNull(message = "Synopsis is required")
+                           @NotEmpty(message = "Synopsis is required")
                            String synopsis,
                            boolean shareable){
 }

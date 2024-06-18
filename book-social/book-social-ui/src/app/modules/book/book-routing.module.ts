@@ -23,7 +23,7 @@ const routes: Routes = [
         component: ManageBookComponent
       },
       {
-        path: 'manager/:bookId',
+        path: 'manage/:bookId',
         component: ManageBookComponent
       }
     ]
